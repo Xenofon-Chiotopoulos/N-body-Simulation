@@ -18,6 +18,7 @@ set(PHAS0100ASSIGNMENT2_LIBRARY_SRCS
   nbsimBasicTypes.cpp
   nbsimMyFunctions.cpp
   nbsimException.cpp
+  nbsimParticle.cpp
 )
 
 set(PHAS0100ASSIGNMENT2_LIBRARY_HDRS
