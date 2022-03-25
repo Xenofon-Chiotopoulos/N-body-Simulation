@@ -32,6 +32,7 @@ Eigen::Vector3d Particle::getVelocity()
 void Particle::integrateTimestep(Eigen::Vector3d &acceleration, double timestep)
 {
     velocity_ = velocity_ + acceleration * timestep;
+    //velocity_ = velocity_ - position_ * timestep;
     position_ = position_ + velocity_ * timestep;
     
 }
