@@ -66,6 +66,8 @@ int main(int argc, char** argv)
   Eigen::Vector3d testVel2 = mp2->getVelocity();
   std::cout << "MP1" << '\n' << testPos1 << '\n' << testVel1 << '\n' << std::endl;
   std::cout << "MP2" << '\n' << testPos2 << '\n' << testVel2 << '\n' << std::endl;
+
+  
   //Eigen::Vector3d testMu = mp1->getacceleration();
   //std::cout << testMu << std::endl;
 
