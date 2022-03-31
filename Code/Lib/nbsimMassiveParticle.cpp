@@ -63,3 +63,45 @@ Eigen::Vector3d MassiveParticle::getacceleration()
 {
   return acceleration_;
 }
+
+void MassiveParticle::calculateEkinetic()
+{
+  double temp = 0;
+  for(int i = 0; i < nbodyList_.size(); ++i)
+  {
+    auto vel = (nbodyList_[i]->getVelocity()).norm();
+    temp += nbodyList_[i]->getMu() * std::pow(vel,2);
+  }
+  Ekinetic_ = 0.5 * temp;
+}
+
+void MassiveParticle::calculateEpotential()
+{
+  double temp = 0;
+  for(int i = 0; i < nbodyList_.size(); ++i)
+  {
+    for(int j = 0; j < nbodyList_.size(); ++j)
+    {
+      if(i != j)
+      {
+        auto norm = (nbodyList_[i]->getPosition() - nbodyList_[j]->getPosition()).norm();
+        auto MuMu = nbodyList_[i]->getMu()*nbodyList_[j]->getMu();
+        temp += MuMu/norm;
+      }
+    }
+  }
+  Epotential_ = -0.5*temp;
+}
+
+double MassiveParticle::totalEnergy()
+{
+  calculateEkinetic();
+  calculateEpotential();
+  Etotal_ = Epotential_ + Ekinetic_;
+  return Etotal_;
+}
+
+std::vector<std::shared_ptr<MassiveParticle>> MassiveParticle::getNobdyList()
+{
+  return nbodyList_;
+}
