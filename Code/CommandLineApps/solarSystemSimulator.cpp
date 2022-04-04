@@ -1,7 +1,8 @@
 #include <nbsimMyFunctions.h>
 #include <nbsimExceptionMacro.h>
 #include <iostream>
-#include "nbsimMassiveParticle.h"
+#include "nbsimRandomGen.cpp"
+
 #include "nbsimSolarSystemData.ipp"
 
 #define _USE_MATH_DEFINES
@@ -72,14 +73,7 @@ int main(int argc, char** argv)
     }
     */
 
-
-    std::vector<double> energiesInit;
-    for(auto const& [key, val] : map)
-    {
-      auto energy1 = map[key]->totalEnergy();
-      energiesInit.push_back(energy1);
-    }
-
+    auto energy1 = map["Earth"]->totalEnergy();
     std::clock_t c_start = std::clock();
     auto t_start = std::chrono::high_resolution_clock::now();
 
@@ -108,27 +102,61 @@ int main(int argc, char** argv)
       names.push_back(key);
     }
 
-    double totalEnergyInit = 0;
-    double totalEnergyFinal = 0;
-    for(int i = 0; i < names.size(); i++)
-    {
-      std::cout << "Planet :" << names[i] << '\n' << "Initial energy: " << energiesInit[i] << '\n' << "Final energy: " << energiesFinal[i] 
-                << '\n' << "Energy error: " << 100*abs(energiesInit[i]-energiesFinal[i])/abs(energiesInit[i]) << "%"
-                << '\n' << "-------------------------------------------------------------" << std::endl;
-      totalEnergyInit += energiesInit[i];
-      totalEnergyFinal += energiesFinal[i];
-    }
-
-
     auto energy = map["Earth"]->totalEnergy();
-    std::cout << "Initial total energy is  " << totalEnergyInit << '\n' << std::endl;
-    std::cout << "Final total energy is  " << totalEnergyFinal << '\n' << std::endl;
-    std::cout << "Total error  " << 100*abs(totalEnergyInit - totalEnergyFinal)/abs(totalEnergyInit) << "%" << '\n' << std::endl;
+    std::cout << "Initial total energy is  " << energy1 << '\n' << std::endl;
+    std::cout << "Final total energy is  " << energy << '\n' << std::endl;
+    std::cout << "Total error  " << 100*abs(energy1 - energy)/abs(energy1) << "%" << '\n' << std::endl;
     std::cout << "Total time taken is  " << 1000*(c_end - c_start)/CLOCKS_PER_SEC << " ms" << '\n' << std::endl;
     std::cout << "Total wall time taken " << std::chrono::duration<double, std::milli>(t_end - t_start).count() << " ms" <<  '\n' << std::endl;
   }
 
-  if(argc != 3)
+  
+  if(argc = 4)
+  {
+    long double stepSize = std::atof(argv[1]);
+    long double timeLength = std::atof(argv[2]);
+    int numberOfParticles = std::atof(argv[3]);
+    int iterations = timeLength/stepSize;
+    RandomGen Obj(numberOfParticles);
+    std::vector<std::shared_ptr<MassiveParticle>> particleList = Obj.getList();
+
+    for(int i = 0; i < particleList.size(); i++)
+    {
+      for(int j = 0; j < particleList.size(); j++)
+      {
+        if(i != j)
+        {
+          particleList[i]->addAttractor(particleList[j]);
+        }
+      }
+    }
+
+    auto energy1 = particleList[1]->totalEnergy();
+    std::clock_t c_start = std::clock();
+    auto t_start = std::chrono::high_resolution_clock::now();
+    for(int i=0;i<=iterations;i++)
+    {
+      for(int i = 0; i < particleList.size(); i++)
+      {
+        particleList[i]->calculateAcceleration();
+      }
+      for(int i = 0; i < particleList.size(); i++)
+      {
+        particleList[i]->integrateTimestep(stepSize);
+      }
+    }
+    std::clock_t c_end = std::clock();
+    auto t_end = std::chrono::high_resolution_clock::now();
+    auto energy = particleList[1]->totalEnergy();
+
+    std::cout << "Initial total energy is  " << energy1 << '\n' << std::endl;
+    std::cout << "Final total energy is  " << energy << '\n' << std::endl;
+    std::cout << "Total error  " << 100*abs(energy1 - energy)/abs(energy1) << "%" << '\n' << std::endl;
+    std::cout << "Total time taken is  " << 1000*(c_end - c_start)/CLOCKS_PER_SEC << " ms" << '\n' << std::endl;
+    std::cout << "Total wall time taken " << std::chrono::duration<double, std::milli>(t_end - t_start).count() << " ms" <<  '\n' << std::endl;
+  }
+
+  if(argc != 3 && argc != 4)
     {
         std::cout << "Wrong number of inputs provided" << std::endl;
         show_usage(argv[0]);
