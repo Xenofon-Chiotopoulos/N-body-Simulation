@@ -1,6 +1,12 @@
 #include "nbsimMassiveParticle.h"
 #include <Eigen/Dense>
 #include <cmath>
+#include <iostream>
+
+MassiveParticle::MassiveParticle()
+{
+  
+}
 
 MassiveParticle::MassiveParticle(double Mu, Eigen::Vector3d &position, Eigen::Vector3d &velocity)
 {
@@ -40,6 +46,7 @@ void MassiveParticle::calculateAcceleration()
 {
   Eigen::Vector3d origin(0,0,0);
   acceleration_ = origin;
+
   for(int i = 0; i < nbodyList_.size(); ++i)
   {
     Eigen::Vector3d currentDif = getPosition() - nbodyList_[i]->getPosition();
@@ -67,26 +74,42 @@ Eigen::Vector3d MassiveParticle::getacceleration()
 void MassiveParticle::calculateEkinetic()
 {
   double temp = 0;
+#pragma omp parallel for reduction(+:temp)
   for(int i = 0; i < nbodyList_.size(); ++i)
   {
     auto vel = (nbodyList_[i]->getVelocity()).norm();
     temp += nbodyList_[i]->getMu() * std::pow(vel,2);
   }
-  Ekinetic_ = 0.5 * temp;
+  double ownKinetic =  Mu_ * std::pow(getVelocity().norm(),2);
+  Ekinetic_ = 0.5 * (temp + ownKinetic);
 }
 
 void MassiveParticle::calculateEpotential()
 {
   double temp = 0;
-  for(int i = 0; i < nbodyList_.size(); ++i)
+  double owntemp = 0;
+  std::vector<std::shared_ptr<MassiveParticle>> tempList = nbodyList_;
+  auto vel = getVelocity();
+  auto pos = getPosition();
+  std::shared_ptr<MassiveParticle> currentObj = std::make_shared<MassiveParticle>(getMu(),pos,vel);
+  tempList.push_back(currentObj);
+  
+  for(int i = 0; i < tempList.size(); ++i)
   {
-    for(int j = 0; j < nbodyList_.size(); ++j)
+    for(int j = 0; j < tempList.size(); ++j)
     {
       if(i != j)
       {
-        auto norm = (nbodyList_[i]->getPosition() - nbodyList_[j]->getPosition()).norm();
-        auto MuMu = nbodyList_[i]->getMu()*nbodyList_[j]->getMu();
-        temp += MuMu/norm;
+        auto norm = (tempList[i]->getPosition() - tempList[j]->getPosition()).norm();
+        auto MuMu = tempList[i]->getMu()*tempList[j]->getMu();
+        if(norm == 0)
+        {
+          continue;
+        }
+        else
+        {
+          temp += MuMu/norm;
+        }
       }
     }
   }

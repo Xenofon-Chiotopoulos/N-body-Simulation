@@ -1,8 +1,10 @@
 #include "nbsimParticle.h"
 #include <memory>
 
-class MassiveParticle :public Particle{
+class MassiveParticle :public Particle
+{
   public:
+  MassiveParticle();
   MassiveParticle(double Mu, Eigen::Vector3d &position, Eigen::Vector3d &velocity);
   ~MassiveParticle();
   void setMu(double Mu);
