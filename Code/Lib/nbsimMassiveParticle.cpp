@@ -2,6 +2,7 @@
 #include <Eigen/Dense>
 #include <cmath>
 #include <iostream>
+#include <omp.h>
 
 MassiveParticle::MassiveParticle()
 {
@@ -47,6 +48,7 @@ void MassiveParticle::calculateAcceleration()
   Eigen::Vector3d origin(0,0,0);
   acceleration_ = origin;
 
+//#pragma omp parallel for //firstprivate(acceleration_) 
   for(int i = 0; i < nbodyList_.size(); ++i)
   {
     Eigen::Vector3d currentDif = getPosition() - nbodyList_[i]->getPosition();
@@ -74,7 +76,7 @@ Eigen::Vector3d MassiveParticle::getacceleration()
 void MassiveParticle::calculateEkinetic()
 {
   double temp = 0;
-#pragma omp parallel for reduction(+:temp)
+//make#pragma omp parallel for private(temp) schedule(static)
   for(int i = 0; i < nbodyList_.size(); ++i)
   {
     auto vel = (nbodyList_[i]->getVelocity()).norm();
@@ -93,7 +95,10 @@ void MassiveParticle::calculateEpotential()
   auto pos = getPosition();
   std::shared_ptr<MassiveParticle> currentObj = std::make_shared<MassiveParticle>(getMu(),pos,vel);
   tempList.push_back(currentObj);
+  int omp_rank, my_id;
   
+
+  //#pragma omp parallel for collapse(2) schedule(static) reduction(+:temp) private(omp_rank)
   for(int i = 0; i < tempList.size(); ++i)
   {
     for(int j = 0; j < tempList.size(); ++j)
@@ -110,9 +115,10 @@ void MassiveParticle::calculateEpotential()
         {
           temp += MuMu/norm;
         }
-      }
+      } 
     }
   }
+  //#pragma omp nowait
   Epotential_ = -0.5*temp;
 }
 
