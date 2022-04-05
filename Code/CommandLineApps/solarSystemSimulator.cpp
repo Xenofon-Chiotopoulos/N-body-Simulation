@@ -14,6 +14,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <chrono>
+#include <omp.h>
 
 static void show_usage(std::string name)
 {
@@ -108,9 +109,9 @@ int main(int argc, char** argv)
     std::cout << "Total error  " << 100*abs(energy1 - energy)/abs(energy1) << "%" << '\n' << std::endl;
     std::cout << "Total time taken is  " << 1000*(c_end - c_start)/CLOCKS_PER_SEC << " ms" << '\n' << std::endl;
     std::cout << "Total wall time taken " << std::chrono::duration<double, std::milli>(t_end - t_start).count() << " ms" <<  '\n' << std::endl;
+    return 0;
   }
-
-  
+ 
   if(argc = 4)
   {
     long double stepSize = std::atof(argv[1]);
@@ -130,10 +131,11 @@ int main(int argc, char** argv)
         }
       }
     }
-
+    auto initPosition = particleList[1]->getPosition();
     auto energy1 = particleList[1]->totalEnergy();
     std::clock_t c_start = std::clock();
     auto t_start = std::chrono::high_resolution_clock::now();
+//#pragma omp parallel for
     for(int i=0;i<=iterations;i++)
     {
       for(int i = 0; i < particleList.size(); i++)
@@ -148,12 +150,17 @@ int main(int argc, char** argv)
     std::clock_t c_end = std::clock();
     auto t_end = std::chrono::high_resolution_clock::now();
     auto energy = particleList[1]->totalEnergy();
+    auto initPosition1 = particleList[1]->getPosition();
+
+    std::cout << "Initial position is  " << initPosition << '\n' << std::endl;
+    std::cout << "Final position is  " << initPosition1 << '\n' << std::endl;
 
     std::cout << "Initial total energy is  " << energy1 << '\n' << std::endl;
     std::cout << "Final total energy is  " << energy << '\n' << std::endl;
     std::cout << "Total error  " << 100*abs(energy1 - energy)/abs(energy1) << "%" << '\n' << std::endl;
     std::cout << "Total time taken is  " << 1000*(c_end - c_start)/CLOCKS_PER_SEC << " ms" << '\n' << std::endl;
     std::cout << "Total wall time taken " << std::chrono::duration<double, std::milli>(t_end - t_start).count() << " ms" <<  '\n' << std::endl;
+    return 0;
   }
 
   if(argc != 3 && argc != 4)
