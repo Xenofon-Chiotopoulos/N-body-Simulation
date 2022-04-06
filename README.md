@@ -86,7 +86,7 @@ These results are not very reprsentative so a loglog graph is used below to bett
 
 ![Getting Started](Results/loglog_100_year.JPG)
 
-From these resutls we can clearly see that on the logarithmic graphs both the error and time complexity results in a straight line, leading to the conclusion that the computational complexity of decreacing the step size is of order O(n^2).  
+From these resutls we can clearly see that on the logarithmic graphs both the error and time complexity results in a straight line, leading to the conclusion that the computational complexity of decreacing the step size is of order $O(n^2)$.  
 
 Testing Solar system application for Random particles
 ---------------------------------
