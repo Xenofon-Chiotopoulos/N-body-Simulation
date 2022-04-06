@@ -47,6 +47,30 @@ To build this application you must run the following bash commands inside the PH
    ```sh
    make
    ```
+Once this has been done you will need to used
+```sh
+./bin
+```
+where 3 applications will be found 
+```sh
+/solarSystemSimulator
+/nbsimCommandLineArgsTest 
+/nbsimBasicTest 
+```
+nbsimBasicTest and nbsimCommandLineArgsTest can be run with no command line argumrnts and run tests to make sure functionality of the code is correct.
+solarSystemSimulator is the main applicaiton.
+there are two possible inputs to this application .
+```sh
+/solarSystemSimulator double Timestep double Timelength 
+```
+which simulates the solar system with a specifeid time step and time length
+
+and 
+```sh
+/solarSystemSimulatordouble Timestep double Timelength int particleNumber
+```
+Which allows the user to specify a number of random particles to initialize and simultes them for a specified timestep and time length.
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -66,7 +90,7 @@ To recreate these results one would need to run:
 With two inputs:
 1. The size of the time step as a double
 2. The number of years the solar system should be simulated for
-3. 
+
 This section corresponds to the part of the assingment that asks for the simulation of the solar system for 1 year using a timestep of 0.000274 (which corresponds to 0.1 days). The results for this seen in the png that follows:
 
 ![Getting Started](Results/Solar_system_sim_1_year.png)
@@ -88,7 +112,7 @@ The resutls can be seen in the following .JPG:
 
 ![Getting Started](Results/100_year_sim.JPG)
 
-These results are not very reprsentative so a loglog graph is used below to better visulaize the resutls.
+These results are not very reprsentative so a loglog graph is used below to better visulaize the resutls. The loglog graph is ideal for these results as it increaces the visual effect of the variance in time taken.
 
 ![Getting Started](Results/loglog_100_year.JPG)
 
@@ -97,7 +121,7 @@ From these resutls we can clearly see that on the logarithmic graphs both the er
 
 Testing Solar system application for Random particles
 ---------------------------------
-This section is made to test the integration of the random particle generator class with the rest of the code, that being the MassiveParticle class and the parent Particle class. For the initialisation of the random particels some stable equations of motion are used as seen in the assingment pdf. For this simulation to be stable and avoid decaying orbits and other issues a massive paritlce is initialised first with a much larger value of mu than the rest of the particles so we can simulate the oribits of many particles around one central object.
+This section is made to test the integration of the random particle generator class with the rest of the code, that being the MassiveParticle class and the parent Particle class. For the initialisation of the random particels some stable equations of motion are used as seen in the assingment pdf. No results for the error will be shown here as we are not interested in it as it behaves identially to the scenario above. For this simulation to be stable and avoid decaying orbits and other issues a massive paritlce is initialised first with a much larger value of mu than the rest of the particles so we can simulate the oribits of many particles around one central object.
 To recreate these results one would need to run:
 ```sh
 ./bin/solarSystemSimulator 
@@ -114,8 +138,14 @@ Some basic initial parallelization for the loops that calcualte the acceleration
 
 As we can see from the graph that the parallelization does lead to some speedup in the simulation time when comparing the original to and number of threads. The current machine used for these simulations has 4 cores and as such there is no preformance boost seen when specifing a number of threads above 4. This difference can clearly be seen when comparing with OMP_NUM_THREADS=2 as there is a clear preformance difference.
 
+One important thing to note here is that each time the program is timed there is roughly a 10% variance in the results as each time a simulation is carried out the particles used are randomly initialised. Due to this once the maximum number of cores is reached all the results can be thought of being statistically the same.
+
 In the assingment breif there is a suggestion made for the reduction of some for loops due to the computation of the energy possibly becoming a bottleneck to the computation, this has been done. However it cannot be comared to the resutls above as the timing was done for the calcualtion of the acceleraion and the timeStep only. This was done to measure the direct effect of the pallelism of the two main for loops.
 
 However new benchmarking for the reduction of the energy for loops results in the following:
+
+![Getting Started](Results/reduction.JPG)
+
+The results above show us that preforming the collapse and reduction using OpenMP leads to no imporvement in the preformance as the results are within the statistical variance.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
