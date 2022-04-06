@@ -60,4 +60,4 @@ This section corresponds to the part of the assingment that asks for the simulat
 
 
 ![Getting Started](Results/Solar_system_sim_1_year.png)
-![Getting Started](Results/images/glider.png)
+![Getting Started](Results/benchmarkingOMP.png)
