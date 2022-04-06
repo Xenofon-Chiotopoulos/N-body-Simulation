@@ -49,3 +49,15 @@ To build this application you must run the following bash commands inside the PH
    ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
+
+
+
+Testing Solar system application
+---------------------------------
+This section corresponds to the part of the assingment that asks for the simulation of the solar system for 1 year using a timestep of 0.000274 (which corresponds to 0.1 days). The results for this seen in the png that follows:
+!Getting Started](Results/images/glider.png)
+
+
+
+![Getting Started](Results/images/glider.png)
+![Getting Started](Results/images/glider.png)
