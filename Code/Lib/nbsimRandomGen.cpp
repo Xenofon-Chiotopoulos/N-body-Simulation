@@ -5,16 +5,18 @@
 #include <iostream>
 #include <Eigen/Dense>
 
+/*Base class constructor */
 RandomGen::RandomGen()
 {
 
 }
-
+/*Base class decostructor */
 RandomGen::~RandomGen()
 {
   
 }
 
+/*constructor that intializes the velocity and poistion randomly and stores objecs in a vector */
 RandomGen::RandomGen(int num)
 {
   Eigen::Vector3d origin(0,0,0);
@@ -42,6 +44,7 @@ RandomGen::RandomGen(int num)
   }
 }
 
+/*fucntion that randomly generates a radius which is used in the constructor*/
 double RandomGen::randomRadius()
 {
   std::random_device rd; 
@@ -51,6 +54,7 @@ double RandomGen::randomRadius()
   return radius;
 }
 
+/*fucntion that randomly generates a theta which is used in the constructor*/
 double RandomGen::randomTheta()
 {
   std::random_device rd; 
@@ -60,6 +64,7 @@ double RandomGen::randomTheta()
   return theta * 2 * M_PI;
 }
 
+/*fucntion that retruns the vector of objects stored*/
 std::vector<std::shared_ptr<MassiveParticle>> RandomGen::getList()
 {
   return particleList_;

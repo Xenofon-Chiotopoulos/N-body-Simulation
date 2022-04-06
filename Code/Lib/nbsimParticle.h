@@ -1,5 +1,6 @@
 #include <Eigen/Dense>
-
+/*base particle class used for the storing of the position and velocity of a particle and 
+can calculate the new position and velocity of a particle*/
 class Particle{
 
   public:

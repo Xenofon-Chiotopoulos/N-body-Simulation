@@ -1,6 +1,7 @@
 #include "nbsimParticle.h"
 #include <memory>
-
+/*Massive pariticle class that inherites from the particle class and includes added functions 
+that can calculate acceleration due to other bodies and store a list of bodies in the system*/
 class MassiveParticle :public Particle
 {
   public:
