@@ -50,7 +50,12 @@ To build this application you must run the following bash commands inside the PH
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+Resutls
+-----------
+All the results that follow were timed using 
+std::chrono::high_resolution_clock
 
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 Testing Solar system application
 ---------------------------------
@@ -65,6 +70,7 @@ With two inputs:
 This section corresponds to the part of the assingment that asks for the simulation of the solar system for 1 year using a timestep of 0.000274 (which corresponds to 0.1 days). The results for this seen in the png that follows:
 
 ![Getting Started](Results/Solar_system_sim_1_year.png)
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 Testing Solar system application for 100 years
 ---------------------------------
@@ -75,7 +81,7 @@ To recreate these results one would need to run:
 With two inputs:
 1. The size of the time step as a double
 2. The number of years the solar system should be simulated for
-3. 
+
 To test the application solarSystem application we can look at the results of simulating the solar system for 100 years with different step sizes for the time step. The varience in the step size is made as there is a very simple integration scheme that governs the dynamics of the system being investiged.
 The specific scenario the is tested is running the solar system for 100 years with step sizes ranging from 0.1 -> 0.0000001.
 The resutls can be seen in the following .JPG:
@@ -86,7 +92,8 @@ These results are not very reprsentative so a loglog graph is used below to bett
 
 ![Getting Started](Results/loglog_100_year.JPG)
 
-From these resutls we can clearly see that on the logarithmic graphs both the error and time complexity results in a straight line, leading to the conclusion that the computational complexity of decreacing the step size is of order $O(n^2)$.  
+From these resutls we can clearly see that on the logarithmic graphs both the error and time complexity results in a straight line, leading to the conclusion that the computational complexity of decreacing the step size is of order O(n^2).  
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 Testing Solar system application for Random particles
 ---------------------------------
@@ -101,8 +108,14 @@ With three inputs:
 3. The number of random initial particles to be made
 
 In this section the code is being tested for the initialization of random particles and then the parallelisation of the code.
-
+Some basic initial parallelization for the loops that calcualte the acceleration and the timestep function was made and then this was benchmarked against no parallelization. The same graph of time versus stepsize was made but for a different number of specified threads. Using OMP_NUM_THREADS= the number of threads checked were 2,4,8,16:
 
 ![Getting Started](Results/Benchmarking.JPG)
 
+As we can see from the graph that the parallelization does lead to some speedup in the simulation time when comparing the original to and number of threads. The current machine used for these simulations has 4 cores and as such there is no preformance boost seen when specifing a number of threads above 4. This difference can clearly be seen when comparing with OMP_NUM_THREADS=2 as there is a clear preformance difference.
 
+In the assingment breif there is a suggestion made for the reduction of some for loops due to the computation of the energy possibly becoming a bottleneck to the computation, this has been done. However it cannot be comared to the resutls above as the timing was done for the calcualtion of the acceleraion and the timeStep only. This was done to measure the direct effect of the pallelism of the two main for loops.
+
+However new benchmarking for the reduction of the energy for loops results in the following:
+
+<p align="right">(<a href="#top">back to top</a>)</p>
