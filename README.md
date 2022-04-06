@@ -55,15 +55,24 @@ To build this application you must run the following bash commands inside the PH
 Testing Solar system application
 ---------------------------------
 This section corresponds to the part of the assingment that asks for the simulation of the solar system for 1 year using a timestep of 0.000274 (which corresponds to 0.1 days). The results for this seen in the png that follows:
-!Getting Started](Results/images/glider.png)
-
-
 
 ![Getting Started](Results/Solar_system_sim_1_year.png)
 
+Testing Solar system application for 100 years
+---------------------------------
+To test the application solarSystem application we can look at the results of simulating the solar system for 100 years with different step sizes for the time step. The varience in the step size is made as there is a very simple integration scheme that governs the dynamics of the system being investiged.
+The resutls can be seen in the following .JPG:
+
 ![Getting Started](Results/100_year_sim.JPG)
 
+These results are not very reprsentative so a loglog graph is used below to better visulaize the resutls.
+
 ![Getting Started](Results/loglog_100_year.JPG)
+
+From these resutls we can clearly see the  
+
+Testing Solar system application for Random particles
+---------------------------------
 
 ![Getting Started](Results/Benchmarking.JPG)
 
