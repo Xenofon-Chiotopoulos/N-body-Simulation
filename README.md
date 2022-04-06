@@ -60,4 +60,11 @@ This section corresponds to the part of the assingment that asks for the simulat
 
 
 ![Getting Started](Results/Solar_system_sim_1_year.png)
-![Getting Started](Results/benchmarkingOMP.png)
+
+![Getting Started](Results/100_year_sim.JPG)
+
+![Getting Started](Results/loglog_100_year_sim.JPG)
+
+![Getting Started](Results/Benchmarking.JPG)
+
+
