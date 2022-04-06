@@ -88,7 +88,7 @@ The resutls can be seen in the following .JPG:
 
 ![Getting Started](Results/100_year_sim.JPG)
 
-These results are not very reprsentative so a loglog graph is used below to better visulaize the resutls.
+These results are not very reprsentative so a loglog graph is used below to better visulaize the resutls. The loglog graph is ideal for these results as it increaces the visual effect of the variance in time taken.
 
 ![Getting Started](Results/loglog_100_year.JPG)
 
@@ -114,8 +114,14 @@ Some basic initial parallelization for the loops that calcualte the acceleration
 
 As we can see from the graph that the parallelization does lead to some speedup in the simulation time when comparing the original to and number of threads. The current machine used for these simulations has 4 cores and as such there is no preformance boost seen when specifing a number of threads above 4. This difference can clearly be seen when comparing with OMP_NUM_THREADS=2 as there is a clear preformance difference.
 
+One important thing to note here is that each time the program is timed there is roughly a 10% variance in the results as each time a simulation is carried out the particles used are randomly initialised. Due to this once the maximum number of cores is reached all the results can be thought of being statistically the same.
+
 In the assingment breif there is a suggestion made for the reduction of some for loops due to the computation of the energy possibly becoming a bottleneck to the computation, this has been done. However it cannot be comared to the resutls above as the timing was done for the calcualtion of the acceleraion and the timeStep only. This was done to measure the direct effect of the pallelism of the two main for loops.
 
 However new benchmarking for the reduction of the energy for loops results in the following:
+
+![Getting Started](Results/)
+
+The results above show us that preforming the collapse and reduction using OpenMP leads to no imporvement in the preformance as the results are within the statistical variance.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
