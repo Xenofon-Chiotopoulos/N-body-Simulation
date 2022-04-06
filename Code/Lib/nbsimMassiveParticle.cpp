@@ -47,15 +47,24 @@ void MassiveParticle::calculateAcceleration()
 {
   Eigen::Vector3d origin(0,0,0);
   acceleration_ = origin;
+  std::vector<Eigen::Vector3d> currentDiff;
+  std::vector<double> currentDiffNorm;
+  std::vector<double> currentMu;
 
-//#pragma omp parallel for //firstprivate(acceleration_) 
   for(int i = 0; i < nbodyList_.size(); ++i)
   {
-    Eigen::Vector3d currentDif = getPosition() - nbodyList_[i]->getPosition();
-    double currentDiffNorm = currentDif.norm();
-    double currentMu = nbodyList_[i]->getMu();
-    acceleration_ += -(currentMu/std::pow(currentDiffNorm,3))*currentDif; 
+    currentDiff.push_back(getPosition() - nbodyList_[i]->getPosition());
+    currentDiffNorm.push_back(currentDiff[i].norm());
+    currentMu.push_back(nbodyList_[i]->getMu());
   }
+
+  //#pragma omp parallel for 
+  for(int i = 0; i < nbodyList_.size(); ++i)
+  {
+    //#pragma omp atom
+    acceleration_ += -(currentMu[i]/std::pow(currentDiffNorm[i],3))*currentDiff[i]; 
+  }
+  //#pragma barrier
 }
 
 void MassiveParticle::integrateTimestep(const double timestep)
@@ -76,12 +85,13 @@ Eigen::Vector3d MassiveParticle::getacceleration()
 void MassiveParticle::calculateEkinetic()
 {
   double temp = 0;
-//make#pragma omp parallel for private(temp) schedule(static)
+  #pragma omp parallel for reduction(+:temp) schedule(static) collapse(1)
   for(int i = 0; i < nbodyList_.size(); ++i)
   {
     auto vel = (nbodyList_[i]->getVelocity()).norm();
     temp += nbodyList_[i]->getMu() * std::pow(vel,2);
   }
+  #pragma omp nowait
   double ownKinetic =  Mu_ * std::pow(getVelocity().norm(),2);
   Ekinetic_ = 0.5 * (temp + ownKinetic);
 }
@@ -95,10 +105,8 @@ void MassiveParticle::calculateEpotential()
   auto pos = getPosition();
   std::shared_ptr<MassiveParticle> currentObj = std::make_shared<MassiveParticle>(getMu(),pos,vel);
   tempList.push_back(currentObj);
-  int omp_rank, my_id;
-  
 
-  //#pragma omp parallel for collapse(2) schedule(static) reduction(+:temp) private(omp_rank)
+//#pragma omp parallel for collapse(2) schedule(static) reduction(+:temp) 
   for(int i = 0; i < tempList.size(); ++i)
   {
     for(int j = 0; j < tempList.size(); ++j)
@@ -118,7 +126,6 @@ void MassiveParticle::calculateEpotential()
       } 
     }
   }
-  //#pragma omp nowait
   Epotential_ = -0.5*temp;
 }
 

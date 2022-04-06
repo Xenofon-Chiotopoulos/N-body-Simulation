@@ -37,7 +37,7 @@ RandomGen::RandomGen(int num)
     Eigen::Vector3d pos(rX,rY,0.0);
     Eigen::Vector3d vel(vX,vY,0.0); 
 
-    std::shared_ptr<MassiveParticle> particle = std::make_shared<MassiveParticle>(0.00001, pos, vel);
+    std::shared_ptr<MassiveParticle> particle = std::make_shared<MassiveParticle>(0.000001, pos, vel);
     particleList_.push_back(particle);
   }
 }
