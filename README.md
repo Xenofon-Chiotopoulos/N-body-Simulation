@@ -1,4 +1,4 @@
-PHAS0100Assignment2
+Software simulation the n-body graviational problem
 ------------------
 
 [![Build Status](https://travis-ci.com/[USERNAME]/PHAS0100Assignment2.svg?branch=master)](https://travis-ci.com/[USERNAME]/PHAS0100Assignment2)
